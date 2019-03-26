@@ -5,8 +5,8 @@ describe Consent do
     it 'creates a new subject with the given key and label' do
       Consent.define(:lol_key, 'My Label') {}
 
-      expect(Consent.subjects[:lol_key].label).to eql 'My Label'
-      expect(Consent.subjects[:lol_key].key).to eql :lol_key
+      expect(Consent.subjects.last.label).to eql 'My Label'
+      expect(Consent.subjects.last.key).to eql :lol_key
     end
 
     it 'yields a in dsl context' do
@@ -16,7 +16,7 @@ describe Consent do
       end
 
       expect(build_context).to be_a(Consent::DSL)
-      expect(build_context.subject).to be Consent.subjects[:lol_key]
+      expect(build_context.subject).to be Consent.subjects.last
     end
 
     it 'yields a in dsl context with defaults' do
