@@ -20,7 +20,7 @@ module Consent
   end
 
   def self.find_subjects(subject_key)
-    @subjects.find do |subject|
+    @subjects.find_all do |subject|
       subject.key.eql?(subject_key)
     end
   end
