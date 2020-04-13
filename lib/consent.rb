@@ -53,6 +53,8 @@ module Consent
 
   # Finds a view within a subject context
   #
+  # @param subject_key the subject key
+  # @param view_key the view key
   # @return [Consent::View,nil]
   def self.find_view(subject_key, view_key)
     views = Consent.find_subjects(subject_key)
