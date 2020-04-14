@@ -7,7 +7,7 @@ RSpec.describe Consent::Permission do
     double.tap do |view|
       allow(Consent).to(
         receive(:find_view)
-          .with(:subject, :view)
+          .with(:subject, :action, :view)
           .and_return(view)
       )
     end
@@ -15,7 +15,7 @@ RSpec.describe Consent::Permission do
 
   describe '#conditions' do
     it 'is the conditions from the view given the view key' do
-      permission = Consent::Permission.new(:subject, nil, :view)
+      permission = Consent::Permission.new(:subject, :action, :view)
 
       expect(view).to receive(:conditions).with('user').and_return 'condition'
 

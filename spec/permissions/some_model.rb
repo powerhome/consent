@@ -15,5 +15,5 @@ Consent.define SomeModel, 'My Label' do
   end
 
   action :action1, 'Action One', views: %i[view1 lol]
-  action :destroy, 'Destroy', views: %i[lol self], default_view: :future
+  action :destroy, 'Destroy', views: %i[lol self future], default_view: :future
 end

@@ -9,7 +9,7 @@ module Consent
       @subject_key = subject_key
       @action_key = action_key
       @view_key = view_key
-      @view = Consent.find_view(subject_key, view_key) if view_key
+      @view = Consent.find_view(subject_key, action_key, view_key) if view_key
     end
   end
 end

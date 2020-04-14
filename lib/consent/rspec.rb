@@ -31,6 +31,13 @@ module Consent
   module Rspec
     extend RSpec::Matchers::DSL
 
+    def find_view_in_subject(subject_key, view_key)
+      Consent.find_subjects(subject_key)
+             .map(&:views)
+             .reduce(&:merge, {})
+             .fetch(view_key)
+    end
+
     matcher :consent_action do |action_key|
       chain :with_views do |*views|
         @views = views
@@ -69,7 +76,7 @@ module Consent
       end
 
       match do |subject_key|
-        view = Consent.find_view(subject_key, view_key)
+        view = find_view_in_subject(subject_key, view_key)
         if conditions
           view&.conditions(*@context).eql?(conditions)
         else
@@ -78,7 +85,7 @@ module Consent
       end
 
       failure_message do |subject_key|
-        view = Consent.find_view(subject_key, view_key)
+        view = find_view_in_subject(subject_key, view_key)
         message = format(
           'expected %<skey>s (%<sclass>s) to provide view %<view>s with` \
           `%<conditions>p, but',

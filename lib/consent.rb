@@ -54,13 +54,12 @@ module Consent
   # Finds a view within a subject context
   #
   # @param subject_key the subject key
+  # @param action_key the action key
   # @param view_key the view key
   # @return [Consent::View,nil]
-  def self.find_view(subject_key, view_key)
-    views = Consent.find_subjects(subject_key)
-                   .map(&:views)
-                   .reduce({}, &:merge)
-    views[view_key]
+  def self.find_view(subject_key, action_key, view_key)
+    Consent.find_action(subject_key, action_key)
+           .views.fetch(view_key)
   end
 
   # Loads all permission (ruby) files from the given directory
