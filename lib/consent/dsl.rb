@@ -27,7 +27,10 @@ module Consent
     end
 
     def action(key, label, options = {})
-      @subject.actions << Action.new(key, label, @subject, @defaults.merge(options))
+      @subject.actions << Action.new(
+        key, label,
+        @subject, @defaults.merge(options)
+      )
     end
 
     def self.build(subject, defaults = {}, &block)

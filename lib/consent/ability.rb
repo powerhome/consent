@@ -18,13 +18,17 @@ module Consent
       can permission.action_key, permission.subject_key, conditions, &ocond
     end
 
-  private
+    private
 
     def apply_defaults
       Consent.subjects.each do |subject|
         subject.actions.map do |action|
           next unless action.default_view
-          consent subject: subject.key, action: action.key, view: action.default_view
+
+          consent(
+            subject: subject.key, action: action.key,
+            view: action.default_view
+          )
         end
       end
     end

@@ -34,7 +34,7 @@ module Consent
     def find_view_in_subject(subject_key, view_key)
       Consent.find_subjects(subject_key)
              .map(&:views)
-             .reduce(&:merge, {})
+             .reduce({}, &:merge)
              .fetch(view_key)
     end
 
