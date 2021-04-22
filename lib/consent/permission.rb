@@ -2,34 +2,29 @@
 
 module Consent
   class Permission # :nodoc:
-    def initialize(subject, action, view = nil)
-      @subject = subject
-      @action = action
-      @view = view
+    attr_reader :subject_key, :action_key, :view_key, :view
+
+    def initialize(subject_key, action_key, view_key = nil)
+      @subject_key = subject_key
+      @action_key = action_key
+      @view_key = view_key
+      @view = Consent.find_view(subject_key, view_key) if view_key
     end
 
-    def subject_key
-      @subject.key
+    def action
+      @action ||= Consent.find_action(subject_key, action_key)
     end
 
-    def action_key
-      @action.key
-    end
-
-    # Disables Sytle/SafeNavigation to keep this code
-    # compatible with ruby < 2.3
-    # rubocop:disable Style/SafeNavigation
-    def view_key
-      @view && @view.key
+    def valid?
+      action && (@view_key.nil? == @view.nil?)
     end
 
     def conditions(*args)
-      @view && @view.conditions(*args)
+      @view.nil? ? nil : @view.conditions(*args)
     end
 
     def object_conditions(*args)
-      @view && @view.object_conditions(*args)
+      @view.nil? ? nil : @view.object_conditions(*args)
     end
-    # rubocop:enable Style/SafeNavigation
   end
 end
