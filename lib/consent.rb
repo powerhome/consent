@@ -5,7 +5,6 @@ require 'consent/subject'
 require 'consent/view'
 require 'consent/action'
 require 'consent/dsl'
-require 'consent/permission'
 require 'consent/ability' if defined?(CanCan)
 require 'consent/railtie' if defined?(Rails)
 
@@ -13,6 +12,8 @@ require 'consent/railtie' if defined?(Rails)
 # concise DSL for authorization so that all abilities do not have
 # to be in your `Ability` class.
 module Consent
+  ViewNotFound = Class.new(StandardError)
+
   # Default views available to every permission
   #
   # i.e.:
@@ -35,7 +36,7 @@ module Consent
   #
   # @return [Array<Consent::Subject>]
   def self.find_subjects(subject_key)
-    @subjects.find_all do |subject|
+    subjects.find_all do |subject|
       subject.key.eql?(subject_key)
     end
   end
@@ -44,21 +45,20 @@ module Consent
   #
   # @return [Consent::Action,nil]
   def self.find_action(subject_key, action_key)
-    Consent.find_subjects(subject_key)
-           .map(&:actions).flatten
-           .find do |action|
-             action.key.eql?(action_key)
-           end
+    find_subjects(subject_key)
+      .flat_map(&:actions)
+      .find do |action|
+        action.key.eql?(action_key)
+      end
   end
 
   # Finds a view within a subject context
   #
   # @return [Consent::View,nil]
-  def self.find_view(subject_key, view_key)
-    views = Consent.find_subjects(subject_key)
-                   .map(&:views)
-                   .reduce({}, &:merge)
-    views[view_key]
+  def self.find_view(subject_key, action_key, view_key)
+    find_action(subject_key, action_key)&.yield_self do |action|
+      action.views[view_key] || raise(Consent::ViewNotFound)
+    end
   end
 
   # Loads all permission (ruby) files from the given directory
@@ -86,12 +86,5 @@ module Consent
     subjects << Subject.new(key, label).tap do |subject|
       DSL.build(subject, defaults, &block)
     end
-  end
-
-  # Maps a permissions hash to a Consent::Permissions
-  #
-  # @return [Consent::Permissions]
-  def self.permissions(permissions)
-    Permissions.new(permissions)
   end
 end

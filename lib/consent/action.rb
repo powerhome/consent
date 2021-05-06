@@ -2,20 +2,23 @@
 
 module Consent
   class Action # :nodoc:
-    attr_reader :key, :label, :options
+    attr_reader :subject, :key, :label, :options
 
-    def initialize(key, label, options = {})
+    def initialize(subject, key, label, options = {})
+      @subject = subject
       @key = key
       @label = label
       @options = options
     end
 
-    def view_keys
-      @options.fetch(:views, [])
+    def views
+      @views ||= @subject.views.slice(*@options.fetch(:views, []))
     end
 
     def default_view
-      @options[:default_view]
+      return unless @options.key?(:default_view)
+
+      @default_view ||= @subject.views[@options[:default_view]]
     end
   end
 end
