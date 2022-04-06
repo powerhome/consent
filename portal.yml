@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: consent
+  title: Consent
+  description: DSL for constructing CanCanCan Abilities
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+spec:
+  type: library
+  owner: heroes-for-fire
+  lifecycle: production
