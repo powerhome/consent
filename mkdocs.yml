@@ -1,0 +1,7 @@
+site_name: Consent
+site_description: Consent Documentation
+nav:
+  - "Home": "README.md"
+  - "TODO": "TODO.md"
+plugins:
+  - techdocs-core
